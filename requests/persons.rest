@@ -7,3 +7,13 @@ GET http://localhost:3001/api/persons/1
 ###
 
 DELETE http://localhost:3001/api/persons/2
+
+### 
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Dmytro Lobanov",
+  "number": "12-33-21"
+}
