@@ -27,6 +27,11 @@ let persons = [
   }
 ];
 
+const errors = {
+  'MISSSING_DATA': 'name or number missing of person',
+  'ALREADY_EXISTS': 'The name already exists in the phonebook',
+}
+
 app.get('/', (req, res) => {
   res.send(`
     <h1>Phonebook</h1>
@@ -45,6 +50,14 @@ app.get('/api/persons', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body;
+
+  if(!body.name || !body.number) {
+    return res.status(400).json({error: errors.MISSSING_DATA});
+  }
+
+  if(persons.find(person => person.name === body.name)) {
+    return res.status(400).json({error: errors.ALREADY_EXISTS});
+  }
 
   const person = {
     id: Math.floor(Math.random() * 4444).toString(),
