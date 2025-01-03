@@ -11,7 +11,6 @@ mongoose.connect(url).then(result => {
 });
 
 const personSchema = new mongoose.Schema({
-  id: String,
   name: String,
   number: String,
 });
