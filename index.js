@@ -45,7 +45,7 @@ let persons = [
 const errors = {
   'MISSSING_DATA': 'name or number missing of person',
   'ALREADY_EXISTS': 'The name already exists in the phonebook',
-}
+};
 
 app.get('/', (req, res) => {
   res.send(`
@@ -106,6 +106,18 @@ app.delete('/api/persons/:id', (req, res, next) => {
     res.status(204).end();
   }).catch(error => next(error));
 });
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  } 
+
+  next(error);
+}
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
