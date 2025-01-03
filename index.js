@@ -19,44 +19,15 @@ app.use(express.json());
 app.use(express.static('dist'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postBody'));
 
-let persons = [
-  { 
-    "id": "1",
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": "2",
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": "3",
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": "4",
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-];
-
 const errors = {
   'MISSSING_DATA': 'name or number missing of person',
   'ALREADY_EXISTS': 'The name already exists in the phonebook',
 };
 
-app.get('/', (req, res) => {
-  res.send(`
-    <h1>Phonebook</h1>
-    <p><a href="/info">Info</a></p>
-    <p><a href="/api/persons">Gull full list in JSON format</a></p>
-  `);
-});
-
 app.get('/info', (req, res) => {
-  res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`);
+  Person.find({}).then(persons => {
+    res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`);
+  });
 });
 
 app.get('/api/persons', (req, res) => {
@@ -89,13 +60,13 @@ app.post('/api/persons', (req, res) => {
 app.get('/api/persons/:id', (req, res) => {
   const { id } = req.params;
 
-  const person = persons.find(person => person.id === id);
-
-  if(person) {
-    res.json(person);
-  } else {
-    res.status(404).end();
-  }
+  Person.findById(id).then(person => {
+    if(person) {
+      res.json(person);
+    } else {
+      res.status(404).end();
+    }
+  });
 });
 
 app.put('/api/persons/:id', (req, res, next) => {
