@@ -76,7 +76,6 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).json({error: errors.ALREADY_EXISTS});
   }
 
-
   const person = new Person({
     name: body.name,
     number: body.number
@@ -88,7 +87,7 @@ app.post('/api/persons', (req, res) => {
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
 
   const person = persons.find(person => person.id === id);
 
@@ -97,6 +96,20 @@ app.get('/api/persons/:id', (req, res) => {
   } else {
     res.status(404).end();
   }
+});
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const { id } = req.params;
+
+  const person = {
+    number: req.body.number,
+  };
+
+  Person.findByIdAndUpdate(id, person, { new: true })
+    .then(updatedPerson => {
+      console.log(JSON.stringify(updatedPerson));
+      res.json(updatedPerson);
+    }).catch(error => next(error))
 });
 
 app.delete('/api/persons/:id', (req, res, next) => {
