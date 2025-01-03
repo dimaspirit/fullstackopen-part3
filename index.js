@@ -76,15 +76,15 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).json({error: errors.ALREADY_EXISTS});
   }
 
-  const person = {
-    id: Math.floor(Math.random() * 4444).toString(),
+
+  const person = new Person({
     name: body.name,
     number: body.number
-  };
+  });
 
-  persons = persons.concat(person);
-
-  res.json(person);
+  person.save().then((personSaved) => {
+    res.json(personSaved);
+  });
 });
 
 app.get('/api/persons/:id', (req, res) => {
