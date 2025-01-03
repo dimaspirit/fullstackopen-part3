@@ -1,6 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
+
+require('dotenv').config();
+
+const Person = require('./models/person')
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -55,7 +60,9 @@ app.get('/info', (req, res) => {
 });
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons);
+  Person.find({}).then(persons => {
+    res.json(persons);
+  });
 });
 
 app.post('/api/persons', (req, res) => {
