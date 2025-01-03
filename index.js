@@ -89,6 +89,7 @@ app.post('/api/persons', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id;
+
   const person = persons.find(person => person.id === id);
 
   if(person) {
@@ -98,11 +99,12 @@ app.get('/api/persons/:id', (req, res) => {
   }
 });
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id;
-  persons = persons.filter(person => person.id !== id);
 
-  res.status(204).end();
+  Person.findByIdAndDelete(id).then(() => {
+    res.status(204).end();
+  }).catch(error => next(error));
 });
 
 app.listen(PORT, () => {
